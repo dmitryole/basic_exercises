@@ -33,7 +33,7 @@ messages = [
 import random
 import uuid
 import datetime
-
+from collections import Counter
 import lorem
 
 
@@ -65,6 +65,75 @@ def generate_chat_history():
         })
     return messages
 
+# 1. Вывести айди пользователя, который написал больше всех сообщений.
+def user_with_maximum_messages(messages,users = []):
+    for message in messages:
+        users += [message['sent_by']]
+    repeat_user = Counter(users).most_common(1)[0][0]
+    return(f'Aйди пользователя, который написал больше всех сообщений: {repeat_user}')
+    
+# 2. Вывести айди пользователя, на сообщения которого больше всего отвечали.
+def user_with_the_most_responses_per_post(messages, reply_for = []):    
+    for message in messages:
+        reply_for += [message['reply_for']]
+    popular_reply_for = Counter(reply_for).most_common(2)
+    if popular_reply_for[0][0] == None:
+        popular_reply_for = popular_reply_for[1][0]
+    else:    
+        popular_reply_for = popular_reply_for[0][0]
+    
+    for message in messages:
+        if message["reply_for"] == popular_reply_for:
+            return (f'Айди пользователя, на сообщения которого больше всего отвечали: {message["sent_by"]}')
+
+#3. Вывести айди пользователей, сообщения которых видело больше всего уникальных пользователей.
+def user_with_the_most_responses(messages, users = [], messages_users_and_seen_by = []):
+    for message in messages:
+        users += [message['sent_by']]
+    users = list(set(users))
+    
+    for message in messages:
+        for user in users:
+            if message['seen_by'] != user:
+                messages_users_and_seen_by.append({'sent_by': message['sent_by'], 'seen_by': message['seen_by']})
+            elif message['seen_by'] == user:
+                messages_users_and_seen_by['seen_by'] += message['seen_by']
+                messages_users_and_seen_by['seen_by'] = list(set(messages_users_and_seen_by['seen_by']))
+    
+    N = len(messages_users_and_seen_by)
+    max = len(messages_users_and_seen_by[0]['seen_by'])
+    sent_by = messages_users_and_seen_by[0]['sent_by']
+    for i in range(N-1):
+        if max < len(messages_users_and_seen_by[i+1]['seen_by']):
+            max = len(messages_users_and_seen_by[i+1]['seen_by'])
+            sent_by = messages_users_and_seen_by[i+1]['sent_by']
+    return(f'Aйди пользователей, сообщения которых видело больше всего уникальных пользователей: {sent_by}')
+
+#4. Определить, когда в чате больше всего сообщений: утром (до 12 часов), днём (12-18 часов) или вечером (после 18 часов).
+def active_time (messages, morning = 0, day = 0, evening = 0):
+    for message in messages:
+        hour = message['sent_at'].hour
+        if hour < 12:
+            morning += 1
+        elif 12 <= hour <= 18 :
+            day += 1
+        elif 18 < hour:
+            evening += 1
+
+    if morning < day and morning < evening:
+        return (f'Больше всего сообщений: утром')
+    elif day < morning and day < evening:
+        return (f'Больше всего сообщений: днем')
+    else:
+        return (f'Больше всего сообщений: вечером')
+
+#5. Вывести идентификаторы сообщений, который стали началом для самых длинных тредов (цепочек ответов).
+ 
 
 if __name__ == "__main__":
-    print(generate_chat_history())
+    #print(generate_chat_history())
+    messages = generate_chat_history()
+    print(user_with_maximum_messages(messages))
+    print(user_with_the_most_responses_per_post(messages))
+    print(user_with_the_most_responses(messages))
+    print(active_time(messages))
