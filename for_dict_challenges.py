@@ -120,6 +120,8 @@ is_male = {
     'Олег': True,
     'Миша': True,
 }
+gendrs_class = []
+
 for classs in school:
     gendrs = {'class': '', 'man': 0, 'woman': 0}
     gendrs['class'] = classs['class']
@@ -133,12 +135,13 @@ for classs in school:
 
 print(gendrs_class) # [{'class': '2a', 'man': 0, 'woman': 2}, {'class': '3c', 'man': 2, 'woman': 0}]
 
-i = 0
-if gendrs_class[i]['man'] > gendrs_class[i+1]['man']:
-    print(f'Больше всего мальчиков в классе {gendrs_class[i]["class"]}')
-elif gendrs_class[i]['man'] < gendrs_class[i+1]['man']:
-    print(f'Больше всего мальчиков в классе {gendrs_class[i+1]["class"]}')
-if gendrs_class[i]['woman'] > gendrs_class[i+1]['woman']:
-    print(f'Больше всего девочек в классе {gendrs_class[i]["class"]}')
-elif gendrs_class[i]['woman'] < gendrs_class[i+1]['woman']:
-    print(f'Больше всего девочек в классе {gendrs_class[i+1]["class"]}')
+N = len(gendrs_class)
+for i in range(N-1):
+    if gendrs_class[i]['man'] > gendrs_class[i+1]['man']:
+        print(f'Больше всего мальчиков в классе {gendrs_class[i]["class"]}')
+    elif gendrs_class[i]['man'] < gendrs_class[i+1]['man']:
+        print(f'Больше всего мальчиков в классе {gendrs_class[i+1]["class"]}')
+    if gendrs_class[i]['woman'] > gendrs_class[i+1]['woman']:
+        print(f'Больше всего девочек в классе {gendrs_class[i]["class"]}')
+    elif gendrs_class[i]['woman'] < gendrs_class[i+1]['woman']:
+        print(f'Больше всего девочек в классе {gendrs_class[i+1]["class"]}')
